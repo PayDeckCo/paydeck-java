@@ -3,15 +3,14 @@ package co.paydeck.core;
 import co.paydeck.model.deposit.*;
 import co.paydeck.model.common.PaydeckResponse;
 import co.paydeck.model.PaymentMethod;
-import java.util.Set;
+
+import java.util.EnumSet;
 
 public interface DepositProvider {
 
     String getProviderName();
 
-    Set<PaymentMethod> getSupportedPaymentMethods();
-
-    boolean supportsPaymentMethod(PaymentMethod method);
+    boolean supportsPaymentMethods(EnumSet<PaymentMethod> methods);
 
     PaydeckResponse<CheckoutResponseData> initiateCheckout(CheckoutRequest request);
 

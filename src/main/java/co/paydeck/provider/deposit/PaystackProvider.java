@@ -37,38 +37,36 @@ public class PaystackProvider implements DepositProvider {
     }
 
     @Override
-    public Set<PaymentMethod> getSupportedPaymentMethods() {
-        return SUPPORTED_METHODS;
+    public boolean supportsPaymentMethods(EnumSet<PaymentMethod> methods) {
+        return SUPPORTED_METHODS.containsAll(methods);
     }
 
-    @Override
-    public boolean supportsPaymentMethod(PaymentMethod method) {
-        return SUPPORTED_METHODS.contains(method);
-    }
 
     @SuppressWarnings("unchecked")
     @Override
     public PaydeckResponse<CheckoutResponseData> initiateCheckout(CheckoutRequest request) {
-        if (!supportsPaymentMethod(request.getPaymentMethod())) {
+        if (!supportsPaymentMethods(request.getPaymentMethods()))
+        {
             return PaydeckResponse.error(
                 "UNSUPPORTED_PAYMENT_METHOD",
-                "Payment method " + request.getPaymentMethod() + 
+                "one or more of the provided Payment method is not" + 
                 " not supported by " + getProviderName()
             );
         }
+
 
         try {
             Map<String, Object> payload = buildCheckoutPayload(request);
             Map<String, Object> response = httpClient.post("/transaction/initialize", payload, Map.class);
 
-            String status = (String) response.get("status");
+            Boolean status = (Boolean) response.get("status");
             String message = (String) response.get("message");
     
-            if (!Boolean.TRUE.equals(response.get("status"))) {
+            if (!Boolean.TRUE.equals(status)) {
                 return PaydeckResponse.providerError(
                     PROVIDER_ERROR,
                     "Paystack request failed",
-                    status,
+                    status ? "success" : "failed",
                     message
                 );
             }
@@ -116,17 +114,19 @@ public class PaystackProvider implements DepositProvider {
     }
 
     private Map<String, Object> buildCheckoutPayload(CheckoutRequest request) {
+        String[] channels = request.getPaymentMethods().stream()
+        .map(PaymentMethod::name)
+        .map(String::toLowerCase)
+        .toArray(String[]::new);
+
+
         Map<String, Object> payload = new HashMap<>();
         payload.put("reference", request.getReference());
         payload.put("amount", request.getAmount().multiply(new BigDecimal("100")).intValue()); // Convert to kobo
+        payload.put("email", request.getCustomer().getEmail());
         payload.put("currency", request.getCurrency());
         payload.put("callback_url", request.getCustomization().getReturnUrl());
-        
-        // Add channels based on payment method
-        List<String> channels = new ArrayList<>();
-        channels.add(request.getPaymentMethod().toPaystackMethod());
         payload.put("channels", channels);
-        
         payload.put("customer", buildCustomerData(request));
         payload.put("customization", buildCustomizationData(request));
         payload.put("metadata", request.getMetadata());

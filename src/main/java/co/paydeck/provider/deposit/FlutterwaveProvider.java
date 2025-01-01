@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class FlutterwaveProvider implements DepositProvider {
     private final HttpClient httpClient;
@@ -35,24 +36,20 @@ public class FlutterwaveProvider implements DepositProvider {
     public String getProviderName() {
         return "Flutterwave";
     }
-
+    
     @Override
-    public Set<PaymentMethod> getSupportedPaymentMethods() {
-        return SUPPORTED_METHODS;
-    }
-
-    @Override
-    public boolean supportsPaymentMethod(PaymentMethod method) {
-        return SUPPORTED_METHODS.contains(method);
+    public boolean supportsPaymentMethods(EnumSet<PaymentMethod> methods) {
+        return SUPPORTED_METHODS.containsAll(methods);
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public PaydeckResponse<CheckoutResponseData> initiateCheckout(CheckoutRequest request) {
-        if (!supportsPaymentMethod(request.getPaymentMethod())) {
+        if (!supportsPaymentMethods(request.getPaymentMethods()))
+        {
             return PaydeckResponse.error(
                 "UNSUPPORTED_PAYMENT_METHOD",
-                "Payment method " + request.getPaymentMethod() + 
+                "one or more of the provided Payment method is not" + 
                 " not supported by " + getProviderName()
             );
         }
@@ -116,11 +113,15 @@ public class FlutterwaveProvider implements DepositProvider {
     }
 
     private Map<String, Object> buildCheckoutPayload(CheckoutRequest request) {
+        String methodsString = String.join(",", request.getPaymentMethods().stream()
+            .map(PaymentMethod::name)
+            .collect(Collectors.toList()));
+
         Map<String, Object> payload = new HashMap<>();
         payload.put("tx_ref", request.getReference());
         payload.put("amount", request.getAmount());
         payload.put("currency", request.getCurrency());
-        payload.put("payment_options", request.getPaymentMethod().toFlutterwaveMethod());
+        payload.put("payment_options", methodsString.toLowerCase());
         payload.put("redirect_url", request.getCustomization().getReturnUrl());
         
         payload.put("customer", buildCustomerData(request));

@@ -3,6 +3,7 @@ package co.paydeck.model.deposit;
 import lombok.Builder;
 import lombok.Data;
 import java.math.BigDecimal;
+import java.util.EnumSet;
 import java.util.Map;
 
 import co.paydeck.model.Currency;
@@ -16,7 +17,7 @@ public class CheckoutRequest {
   private BigDecimal amount;
   private Currency currency;
   private Customer customer;
-  private PaymentMethod paymentMethod;
+  private EnumSet<PaymentMethod> paymentMethods;
   private Map<String, String> metadata;
   private CheckoutCustomization customization;
 }
