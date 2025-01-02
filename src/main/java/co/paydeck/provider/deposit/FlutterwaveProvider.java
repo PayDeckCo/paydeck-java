@@ -1,6 +1,6 @@
 package co.paydeck.provider.deposit;
 
-import co.paydeck.core.DepositProvider;
+import co.paydeck.core.DepositBaseProvider;
 import co.paydeck.model.PaymentMethod;
 import co.paydeck.model.TransactionStatus;
 import co.paydeck.model.deposit.*;
@@ -14,7 +14,7 @@ import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class FlutterwaveProvider implements DepositProvider {
+public class FlutterwaveProvider implements DepositBaseProvider {
     private final HttpClient httpClient;
     private static final Set<PaymentMethod> SUPPORTED_METHODS = EnumSet.of(
         PaymentMethod.CARD,
@@ -82,10 +82,10 @@ public class FlutterwaveProvider implements DepositProvider {
 
     @SuppressWarnings("unchecked")
     @Override
-    public PaydeckResponse<TransactionResponseData> getTransactionStatus(String transactionId) {
+    public PaydeckResponse<TransactionResponseData> fetchTransaction(String merchantTransactionReference) {
         try {
             Map<String, Object> response = httpClient.get(
-                "/transactions/" + transactionId + "/verify",
+                "/transactions/verify_by_reference?tx_ref="+ merchantTransactionReference,
                 Map.class
             );
 
@@ -156,7 +156,7 @@ public class FlutterwaveProvider implements DepositProvider {
         return CheckoutResponseData.builder()
             .checkoutUrl((String) data.get("link"))
             .transactionId((String) data.get("transaction_id"))
-            .providerReference((String) data.get("flw_ref"))
+            .providerTransactionReference((String) data.get("flw_ref"))
             .providerMetadata(metadata)
             .build();
     }
@@ -167,9 +167,9 @@ public class FlutterwaveProvider implements DepositProvider {
         metadata.put("processor_response", (String) data.get("processor_response"));
 
         return TransactionResponseData.builder()
-            .transactionId((String) data.get("id"))
-            .merchantReference((String) data.get("tx_ref"))
-            .providerReference((String) data.get("flw_ref"))
+            .transactionId(data.get("id").toString())
+            .merchantTransactionReference((String) data.get("tx_ref"))
+            .providerTransactionReference((String) data.get("flw_ref"))
             .status(mapTransactionStatus((String) data.get("status")))
             .amount(new BigDecimal(data.get("amount").toString()))
             .chargedAmount(new BigDecimal(data.get("charged_amount").toString()))

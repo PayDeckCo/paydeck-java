@@ -6,7 +6,7 @@ import co.paydeck.model.PaymentMethod;
 
 import java.util.EnumSet;
 
-public interface DepositProvider {
+public interface BaseDepositProvider {
 
     String getProviderName();
 
@@ -14,5 +14,5 @@ public interface DepositProvider {
 
     PaydeckResponse<CheckoutResponseData> initiateCheckout(CheckoutRequest request);
 
-    PaydeckResponse<TransactionResponseData> getTransactionStatus(String transactionId);
+    PaydeckResponse<TransactionResponseData> fetchTransaction(String merchantTransactionReference);
 }

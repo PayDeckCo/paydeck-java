@@ -12,8 +12,8 @@ import co.paydeck.model.TransactionStatus;
 @Builder
 public class TransactionResponseData {
     private String transactionId;
-    private String providerReference;
-    private String merchantReference;
+    private String providerTransactionReference;
+    private String merchantTransactionReference;
     private TransactionStatus status;
     private BigDecimal amount;
     private BigDecimal chargedAmount;

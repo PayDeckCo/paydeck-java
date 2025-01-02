@@ -9,6 +9,6 @@ import java.util.Map;
 public class CheckoutResponseData {
     private String checkoutUrl;
     private String transactionId;
-    private String providerReference;
+    private String providerTransactionReference;
     private Map<String, String> providerMetadata;
 }

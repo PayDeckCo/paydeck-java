@@ -1,6 +1,6 @@
 package co.paydeck.provider.deposit;
 
-import co.paydeck.core.DepositProvider;
+import co.paydeck.core.DepositBaseProvider;
 import co.paydeck.model.PaymentMethod;
 import co.paydeck.model.TransactionStatus;
 import co.paydeck.model.deposit.*;
@@ -13,7 +13,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
 
-public class PaystackProvider implements DepositProvider {
+public class PaystackProvider implements DepositBaseProvider {
     private final HttpClient httpClient;
     private static final Set<PaymentMethod> SUPPORTED_METHODS = EnumSet.of(
         PaymentMethod.CARD,
@@ -83,21 +83,21 @@ public class PaystackProvider implements DepositProvider {
 
     @SuppressWarnings("unchecked")
     @Override
-    public PaydeckResponse<TransactionResponseData> getTransactionStatus(String transactionId) {
+    public PaydeckResponse<TransactionResponseData> fetchTransaction(String merchantTransactionReference) {
         try {
             Map<String, Object> response = httpClient.get(
-                "/transaction/verify/" + transactionId,
+                "/transaction/verify/" + merchantTransactionReference,
                 Map.class
             );
 
-            String status = (String) response.get("status");
+            Boolean status = (Boolean) response.get("status");
             String message = (String) response.get("message");
 
             if (!Boolean.TRUE.equals(response.get("status"))) {
                 return PaydeckResponse.providerError(
                     PROVIDER_ERROR,
                     "Paystack transaction verification failed",
-                    status,
+                    status ? "success" : "failed",
                     message
                 );
             }
@@ -159,7 +159,7 @@ public class PaystackProvider implements DepositProvider {
         return CheckoutResponseData.builder()
             .checkoutUrl((String) data.get("authorization_url"))
             .transactionId((String) data.get("reference"))
-            .providerReference((String) data.get("access_code"))
+            .providerTransactionReference((String) data.get("access_code"))
             .providerMetadata(metadata)
             .build();
     }
@@ -175,9 +175,9 @@ public class PaystackProvider implements DepositProvider {
             .divide(new BigDecimal("100")); // Convert from kobo to main currency
 
         return TransactionResponseData.builder()
-            .transactionId((String) data.get("id"))
-            .merchantReference((String) data.get("reference"))
-            .providerReference((String) data.get("authorization_code"))
+            .transactionId(data.get("id").toString())
+            .merchantTransactionReference((String) data.get("reference"))
+            .providerTransactionReference((String) data.get("authorization_code"))
             .status(mapTransactionStatus((String) data.get("status")))
             .amount(amount)
             .chargedAmount(amount)
