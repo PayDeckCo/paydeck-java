@@ -1,6 +1,6 @@
 package co.paydeck.provider.deposit;
 
-import co.paydeck.core.DepositBaseProvider;
+import co.paydeck.core.BaseDepositProvider;
 import co.paydeck.model.PaymentMethod;
 import co.paydeck.model.TransactionStatus;
 import co.paydeck.model.deposit.*;
@@ -14,7 +14,7 @@ import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class FlutterwaveProvider implements DepositBaseProvider {
+public class FlutterwaveProvider implements BaseDepositProvider {
     private final HttpClient httpClient;
     private static final Set<PaymentMethod> SUPPORTED_METHODS = EnumSet.of(
         PaymentMethod.CARD,
