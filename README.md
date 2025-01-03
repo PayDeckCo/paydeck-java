@@ -18,6 +18,7 @@ A unified payment gateway integration for multiple payment providers in Africa.
     - [Supported Payment Methods](#supported-payment-methods)
   - [Withdrawal or Payout (Coming Soon)](#withdrawal)
 - [Supported Providers](#supported-providers)
+- [Upcomming Providers](#upcomming-providers)
 - [Advanced Configuration](#advanced-configuration)
 - [Development Status](#development-status)
 - [Contributing](#contributing)
@@ -271,6 +272,8 @@ EnumSet<PaymentMethod> SUPPORTED_METHODS = EnumSet.of(
 Currently supports:
 - FLUTTERWAVE (`Provider.FLUTTERWAVE`)
 - PAYSTACK (`Provider.PAYSTACK`)
+
+## Upcomming Providers
 🚧 Coming Soon
 - Korapay
 - Budpay
