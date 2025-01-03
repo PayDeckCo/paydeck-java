@@ -39,9 +39,9 @@ Add to your `pom.xml`:
 
 ```xml
 <dependency>
-    <groupId>co.paydeck</groupId>
-    <artifactId>paydeck-java</artifactId>
-    <version>1.0-SNAPSHOT</version>
+  <groupId>co.paydeck</groupId>
+  <artifactId>paydeck-java</artifactId>
+  <version>1.0-SNAPSHOT</version>
 </dependency>
 ```
 
