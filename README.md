@@ -16,8 +16,7 @@ A unified payment gateway integration for multiple payment providers in Africa.
     - [Response Handling](#response-handling)
     - [Error Handling](#error-handling)
     - [Supported Payment Methods](#supported-payment-methods)
-  - [Withdrawal (Coming Soon)](#withdrawal)
-  - [Transfer (Coming Soon)](#transfer)  
+  - [Withdrawal or Payout (Coming Soon)](#withdrawal)
 - [Supported Providers](#supported-providers)
 - [Advanced Configuration](#advanced-configuration)
 - [Development Status](#development-status)
@@ -258,14 +257,11 @@ EnumSet<PaymentMethod> SUPPORTED_METHODS = EnumSet.of(
 );
 ```
 
-### Withdrawal
+### Withdrawal or Payout
 🚧 Coming Soon
 - Bank transfers
 - Mobile Money payouts
 - International transfers
-
-### Transfer
-🚧 Coming Soon
 - Bank Account Verification
 - Bank List Retrieval
 - Account Name Resolution
@@ -275,6 +271,10 @@ EnumSet<PaymentMethod> SUPPORTED_METHODS = EnumSet.of(
 Currently supports:
 - FLUTTERWAVE (`Provider.FLUTTERWAVE`)
 - PAYSTACK (`Provider.PAYSTACK`)
+🚧 Coming Soon
+- Korapay
+- Budpay
+- Fincra
 
 ## Advanced Configuration
 
