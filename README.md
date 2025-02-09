@@ -279,21 +279,6 @@ Currently supports:
 - Budpay
 - Fincra
 
-## Advanced Configuration
-
-The SDK uses a configurable HTTP client under the hood:
-
-```java
-HttpClient client = HttpClient.builder()
-    .baseUrl("https://api.example.com")
-    .addDefaultHeader("Authorization", "Bearer " + apiKey)
-    .connectTimeout(30)  // in seconds
-    .readTimeout(30)     // in seconds
-    .writeTimeout(30)    // in seconds
-    .objectMapper(customObjectMapper)  // Optional: custom Jackson ObjectMapper
-    .build();
-```
-
 ## Development Status
 
 Current Status: **Alpha**

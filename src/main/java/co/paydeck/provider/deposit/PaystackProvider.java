@@ -2,6 +2,7 @@ package co.paydeck.provider.deposit;
 
 import co.paydeck.core.BaseDepositProvider;
 import co.paydeck.model.PaymentMethod;
+import co.paydeck.model.Provider;
 import co.paydeck.model.TransactionStatus;
 import co.paydeck.model.deposit.*;
 import co.paydeck.model.common.PaydeckResponse;
@@ -33,7 +34,7 @@ public class PaystackProvider implements BaseDepositProvider {
 
     @Override
     public String getProviderName() {
-        return "Paystack";
+        return Provider.PAYSTACK.getCode();
     }
 
     @Override
