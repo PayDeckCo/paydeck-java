@@ -1,5 +1,6 @@
 package co.paydeck.core;
 
+import co.paydeck.model.payout.BanksRequest;
 import co.paydeck.model.payout.BanksResponseData;
 import co.paydeck.model.payout.PayoutRequest;
 import co.paydeck.model.common.PaydeckResponse;
@@ -14,7 +15,7 @@ public interface BasePayoutProvider {
 
     boolean supportsPaymentMethods(EnumSet<PaymentMethod> methods);
 
-    PaydeckResponse<BanksResponseData> getBanks();
+    PaydeckResponse<BanksResponseData> getBanks(BanksRequest request);
     
     PaydeckResponse<TransactionResponseData> initiatePayout(PayoutRequest request);
 
